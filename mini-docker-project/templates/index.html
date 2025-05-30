@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Ana Sayfa - Görev Yöneticisi{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><i class="fas fa-list"></i> Görevlerim</h1>
+            <a href="{{ url_for('add_task') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Yeni Görev Ekle
+            </a>
+        </div>
+
+        {% if tasks %}
+            <div class="row">
+                {% for task in tasks %}
+                <div class="col-md-6 col-lg-4 mb-3">
+                    <div class="card task-card h-100 {% if task[3] %}border-success{% endif %}">
+                        <div class="card-body">
+                            <h5 class="card-title {% if task[3] %}completed{% endif %}">
+                                {% if task[3] %}
+                                    <i class="fas fa-check-circle text-success"></i>
+                                {% else %}
+                                    <i class="fas fa-circle text-muted"></i>
+                                {% endif %}
+                                {{ task[1] }}
+                            </h5>
+                            {% if task[2] %}
+                                <p class="card-text {% if task[3] %}completed{% endif %}">{{ task[2] }}</p>
+                            {% endif %}
+                            <small class="text-muted">
+                                <i class="fas fa-calendar"></i> 
+                                {{ task[4].strftime('%d.%m.%Y %H:%M') }}
+                            </small>
+                        </div>
+                        <div class="card-footer bg-transparent">
+                            <div class="btn-group w-100" role="group">
+                                {% if not task[3] %}
+                                    <a href="{{ url_for('complete_task', task_id=task[0]) }}" 
+                                       class="btn btn-success btn-sm"
+                                       onclick="return confirm('Bu görevi tamamlandı olarak işaretlemek istediğinizden emin misiniz?')">
+                                        <i class="fas fa-check"></i> Tamamla
+                                    </a>
+                                {% endif %}
+                                <a href="{{ url_for('delete_task', task_id=task[0]) }}" 
+                                   class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Bu görevi silmek istediğinizden emin misiniz?')">
+                                    <i class="fas fa-trash"></i> Sil
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-inbox fa-5x text-muted mb-3"></i>
+                <h3 class="text-muted">Henüz görev bulunmuyor</h3>
+                <p class="text-muted">İlk görevinizi eklemek için aşağıdaki butona tıklayın.</p>
+                <a href="{{ url_for('add_task') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-plus"></i> İlk Görevimi Ekle
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+{% if tasks %}
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-chart-pie"></i> İstatistikler</h5>
+                <div class="row text-center">
+                    <div class="col-md-4">
+                        <h3 class="text-primary">{{ tasks|length }}</h3>
+                        <p class="text-muted">Toplam Görev</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h3 class="text-success">{{ tasks|selectattr('3')|list|length }}</h3>
+                        <p class="text-muted">Tamamlanan</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h3 class="text-warning">{{ tasks|rejectattr('3')|list|length }}</h3>
+                        <p class="text-muted">Bekleyen</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %} 

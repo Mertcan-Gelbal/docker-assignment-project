@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Yeni Görev Ekle - Görev Yöneticisi{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0"><i class="fas fa-plus"></i> Yeni Görev Ekle</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">
+                            <i class="fas fa-heading"></i> Görev Başlığı *
+                        </label>
+                        <input type="text" 
+                               class="form-control" 
+                               id="title" 
+                               name="title" 
+                               placeholder="Görev başlığını girin..."
+                               required
+                               maxlength="200">
+                        <div class="form-text">Maksimum 200 karakter</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">
+                            <i class="fas fa-align-left"></i> Açıklama
+                        </label>
+                        <textarea class="form-control" 
+                                  id="description" 
+                                  name="description" 
+                                  rows="4"
+                                  placeholder="Görev açıklamasını girin... (isteğe bağlı)"></textarea>
+                        <div class="form-text">Bu alan isteğe bağlıdır</div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('index') }}" class="btn btn-secondary me-md-2">
+                            <i class="fas fa-times"></i> İptal
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Görevi Kaydet
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="mt-4">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h6 class="card-title"><i class="fas fa-info-circle"></i> Bilgi</h6>
+                    <ul class="mb-0 small">
+                        <li>Görev başlığı zorunludur</li>
+                        <li>Açıklama alanı isteğe bağlıdır</li>
+                        <li>Eklenen görevler ana sayfada görüntülenecektir</li>
+                        <li>Görevleri tamamlayabilir veya silebilirsiniz</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Form validation
+document.querySelector('form').addEventListener('submit', function(e) {
+    const title = document.getElementById('title').value.trim();
+    if (!title) {
+        e.preventDefault();
+        alert('Görev başlığı boş olamaz!');
+        document.getElementById('title').focus();
+    }
+});
+
+// Character counter for title
+document.getElementById('title').addEventListener('input', function() {
+    const maxLength = 200;
+    const currentLength = this.value.length;
+    const remaining = maxLength - currentLength;
+    
+    let helpText = this.nextElementSibling;
+    helpText.textContent = `${remaining} karakter kaldı`;
+    
+    if (remaining < 20) {
+        helpText.className = 'form-text text-warning';
+    } else if (remaining < 10) {
+        helpText.className = 'form-text text-danger';
+    } else {
+        helpText.className = 'form-text';
+    }
+});
+</script>
+{% endblock %} 
